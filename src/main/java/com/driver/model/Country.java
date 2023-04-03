@@ -9,23 +9,31 @@ public class Country{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String countryName;
+
+    private CountryName countryName;
+
     private String code;
 
+    //todo
+    //mappings
+
+    @OneToOne
+    @JoinColumn
+    private User user;
+
     @ManyToOne
     @JoinColumn
-    User user;
+    private ServiceProvider serviceProvider;
 
-    @ManyToOne
-    @JoinColumn
-    ServiceProvider serviceProvider;
-
-    public Country() {
-    }
-
-    public Country(String countryName, String code) {
+    public Country(int id, CountryName countryName, String code, User user, ServiceProvider serviceProvider) {
+        this.id = id;
         this.countryName = countryName;
         this.code = code;
+        this.user = user;
+        this.serviceProvider = serviceProvider;
+    }
+
+    public Country() {
     }
 
     public int getId() {
@@ -36,11 +44,11 @@ public class Country{
         this.id = id;
     }
 
-    public String getCountryName() {
+    public CountryName getCountryName() {
         return countryName;
     }
 
-    public void setCountryName(String countryName) {
+    public void setCountryName(CountryName countryName) {
         this.countryName = countryName;
     }
 

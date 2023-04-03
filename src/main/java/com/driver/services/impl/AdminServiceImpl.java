@@ -24,58 +24,67 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Admin register(String username, String password) {
-        Admin admin = new Admin(username,password);
+
+        Admin admin = new Admin();
+
+        admin.setPassword(password);
+        admin.setUsername(username);
+
         adminRepository1.save(admin);
+
         return admin;
     }
 
     @Override
     public Admin addServiceProvider(int adminId, String providerName) {
+        //add a serviceProvider under the admin and return updated admin
 
         Admin admin = adminRepository1.findById(adminId).get();
-        ServiceProvider serviceProvider = new ServiceProvider(providerName);
 
+        ServiceProvider serviceProvider = new ServiceProvider();
+
+        serviceProvider.setName(providerName);
         serviceProvider.setAdmin(admin);
+
         admin.getServiceProviders().add(serviceProvider);
 
         adminRepository1.save(admin);
         return admin;
+
     }
 
     @Override
-    public ServiceProvider addCountry(int serviceProviderId, String countryName) throws Exception{
+    public ServiceProvider addCountry(int serviceProviderId, String countryName) throws Exception
 
-        ServiceProvider serviceProvider = serviceProviderRepository1.findById(serviceProviderId).get();
-        countryName = countryName.toUpperCase();
-        Country country = null;
+    {
+        //add a country under the serviceProvider and return respective service provider
+        //country name would be a 3-character string out of ind, aus, usa, chi, jpn. Each character can be in uppercase or lowercase. You should create a new Country object based on the given country name and add it to the country list of the service provider. Note that the user attribute of the country in this case would be null.
+        //In case country name is not amongst the above mentioned strings, throw "Country not found" exception
 
-        switch (countryName){
-            case "IND":
-                country = new Country(countryName,"001");
+        CountryName countryEnumName = null;
+
+        for (CountryName cname : CountryName.values()) {
+            if (cname.name().equalsIgnoreCase(countryName)) {
+                countryEnumName = cname;
                 break;
-            case "USA":
-                country = new Country(countryName,"002");
-                break;
-            case "AUS":
-                country = new Country(countryName,"003");
-                break;
-            case "CHI":
-                country = new Country(countryName,"004");
-                break;
-            case "JPN":
-                country = new Country(countryName,"005");
-                break;
+            }
         }
-
-        if(country == null){
+        if (countryEnumName==null){
             throw new Exception("Country not found");
         }
+        ServiceProvider serviceProvider = serviceProviderRepository1.findById(serviceProviderId).get();
 
+        Country country = new Country();
+
+        country.setCountryName(countryEnumName);
+        country.setCode(countryEnumName.toCode());
         country.setServiceProvider(serviceProvider);
+
         serviceProvider.getCountryList().add(country);
 
         serviceProviderRepository1.save(serviceProvider);
 
         return serviceProvider;
+
     }
 }

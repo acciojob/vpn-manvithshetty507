@@ -6,21 +6,26 @@ import java.util.List;
 
 @Entity
 public class Admin {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String username;
+
     private String password;
 
     @OneToMany(mappedBy = "admin",cascade = CascadeType.ALL)
-    List<ServiceProvider> serviceProviders = new ArrayList<>();
+    private List<ServiceProvider> serviceProviders = new ArrayList<>();
 
-    public Admin() {
-    }
-
-    public Admin(String username, String password) {
+    public Admin(int id, String username, String password, List<ServiceProvider> serviceProviders) {
+        this.id = id;
         this.username = username;
         this.password = password;
+        this.serviceProviders = serviceProviders;
+    }
+
+    public Admin() {
     }
 
     public int getId() {
